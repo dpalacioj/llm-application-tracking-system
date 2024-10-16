@@ -4,7 +4,7 @@ import streamlit as st
 import os
 
 # Personalized Modules
-from models.ai_model import GeminiModel
+from models.gemini_model import GeminiModel
 from utils.pdf_processor import process_uploaded_pdf
 from utils.prompt_templates import evaluation_prompt, percentage_prompt
 
@@ -16,14 +16,27 @@ load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 
 
-# AI Model
-gemini_model = GeminiModel(api_key=api_key)
+# Choose a model
+def get_model(model_name):
+    if model_name == 'gemini':
+        return GeminiModel(api_key=api_key)
+    elif model_name == 'mistral':
+        return MistralModel(api_key=mistral_api_key)
+    ## Add models as you need it
+    else:
+        raise ValueError(f"Model not supported: {model_name}")
 
 
 # Streamlit App Configuration
-
 st.set_page_config(page_title="ATS Resume Expert")
 st.header("ATS Tracking System")
+
+# Select the model since the web interface
+model_options = ['gemini', 'mistral'] # add as many you need
+selected_model_name = st.sidebar.selectbox("Choose one model", model_options)
+
+# Set up the model
+model = get_model(selected_model_name)
 
 # User Inputs
 input_text=st.text_area("Job Description:", key="input")
@@ -39,8 +52,8 @@ submit2 = st.button("Percentage match")
 # Handle button actions
 if submit1:
     if uploaded_file is not None:
-        pdf_content = process_uploaded_pdf(uploaded_file)
-        response = gemini_model.get_response(input_text, pdf_content, evaluation_prompt)
+        resume_content = process_uploaded_pdf(uploaded_file)
+        response = model.generate_response(input_text, resume_content, evaluation_prompt)
         st.subheader("The response is:")
         st.write(response)
     else:
@@ -48,8 +61,8 @@ if submit1:
 
 elif submit2:
     if uploaded_file is not None:
-        pdf_content = process_uploaded_pdf(uploaded_file)
-        response = gemini_model.get_response(input_text, pdf_content, percentage_prompt)
+        resume_content = process_uploaded_pdf(uploaded_file)
+        response = model.generate_response(input_text, resume_content, percentage_prompt)
         st.subheader("The response is")
         st.write(response)
     else:

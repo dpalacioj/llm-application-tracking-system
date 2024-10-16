@@ -1,6 +1,7 @@
 import google.generativeai as genai
+from models.base_model import BaseModel
 
-class GeminiModel:
+class GeminiModel(BaseModel):
     def __init__(self, api_key, model_name='gemini-1.5-flash-001'):
         genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel(model_name)
@@ -11,9 +12,9 @@ class GeminiModel:
         top_k = 40
         )
 
-    def get_response(self, input_text, pdf_content, prompt):
+    def generate_response(self, input_text, resume_content, prompt):
         response = self.model.generate_content(
-            [input_text, pdf_content[0], prompt],
+            [input_text, resume_content[0], prompt],
             generation_config=self.config
         )
         return response.text
