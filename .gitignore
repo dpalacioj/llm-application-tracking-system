@@ -1,3 +1,10 @@
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
 .env
 
 *.pyc
+
