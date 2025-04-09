@@ -1,1 +1,12 @@
+# Byte-compiled Python files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment files
 .env
+
+models/__pycache__/__init__.cpython-310.pyc
+models/__pycache__/ai_model.cpython-310.pyc
+utils/__pycache__/pdf_processor.cpython-310.pyc
+utils/__pycache__/prompt_templates.cpython-310.pyc
